@@ -15,8 +15,6 @@ void Lfsr::initLfsr() {
 
 uint8_t Lfsr::process() {
 
-    //int index = static_cast<int>(phase);
-    //int value = wavetable[index] 
     phase += 1;
     if (phase >= phaseIncrement) {
         int bit = ((lfsr >> 1) & 1) ^ ((lfsr >> 0) & 1);
