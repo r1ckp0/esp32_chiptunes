@@ -2,7 +2,7 @@
 
 Square::Square(float sampleRate) :
     sampleRate(sampleRate), dutyCyle(1), phaseIncrement(0.0f), phase(0),
-    frequency(440.0f) {
+    frequency(440.0f), current(0) {
     initSquare();
 }
 
@@ -21,9 +21,9 @@ uint8_t Square::process() {
 
     phase += 1;
     if (phase >= phaseIncrement) {
-        duties[dutyCycle] >> i
+        current = (current + 1) % 16
     }
-    return (Square & 1) ? HIGH : LOW;
+    return ((Square >> current) & 1) ? HIGH : LOW;
 }
 
 void Square::setFrequency(float newFrequency) {
