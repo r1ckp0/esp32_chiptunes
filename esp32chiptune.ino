@@ -1,6 +1,7 @@
 #include "tri.h"
 #include "lfsr.h"
 #include "square.h"
+#include "saw.h"
 #include <driver/dac.h>
 
 #define DAC1_GPIO 17
@@ -11,8 +12,9 @@
 const float SAMPLE_RATE = 44100.0;
 const uint32_t TIMER_INTERVAL = 2000000UL / (uint32_t)SAMPLE_RATE;
 //Tri triangle(SAMPLE_RATE);
+Saw sawtooth(SAMPLE_RATE);
 //Lfsr noise(SAMPLE_RATE);
-Square sqr(SAMPLE_RATE);
+//Square sqr(SAMPLE_RATE);
 hw_timer_t *timer = NULL;
 portMUX_TYPE timerMux = portMUX_INITIALIZER_UNLOCKED;
 
@@ -22,9 +24,13 @@ void IRAM_ATTR onTimer() {
   //dac_output_voltage(DAC_CHANNEL_1, sample);
   //dac_output_voltage(DAC_CHANNEL_2, sample);
 
+  uint8_t sample = sawtooth.process();
+  dac_output_voltage(DAC_CHANNEL_1, sample);
+  dac_output_voltage(DAC_CHANNEL_2, sample);
+
   //digitalWrite(LFSR_OUT, noise.process());
 
-  digitalWrite(SQR_OUT, sqr.process());
+  //digitalWrite(SQR_OUT, sqr.process());
 
   portEXIT_CRITICAL_ISR(&timerMux);
 }
@@ -34,17 +40,20 @@ void setup() {
 
   //pinMode(LFSR_OUT, OUTPUT);
 
-  pinMode(SQR_OUT, OUTPUT);
+  //pinMode(SQR_OUT, OUTPUT);
 
-  //dac_output_enable(DAC_CHANNEL_1);
-  //dac_output_enable(DAC_CHANNEL_2);
+  dac_output_enable(DAC_CHANNEL_1);
+  dac_output_enable(DAC_CHANNEL_2);
+
+  sawtooth.setFrequency(440.0);
+  sawtooth.setAmount(42);
 
   //triangle.setFrequency(440.0);
   //triangle.setAmplitude(1.0);
 
   //noise.setFrequency(440.0);
 
-  sqr.setFrequency(440.0);
+  //sqr.setFrequency(440.0);
 
   timer = timerBegin(0, 40, true);
   timerAttachInterrupt(timer, &onTimer, true);
@@ -52,7 +61,6 @@ void setup() {
 
   timerAlarmEnable(timer);
 
-  //Serial.println("triangle");
 }
 
 void loop() {
@@ -60,16 +68,17 @@ void loop() {
     if (Serial.available() > 0) {
         String input = Serial.readStringUntil('\n');
         float freq = input.toFloat();
-        if (freq > 20.0 && freq < 5000.0) {
-          //triangle.setFrequency(freq);
-          sqr.setFrequency(freq);
+        if (freq > 50.0 && freq < 5000.0) {
+          sawtooth.setFrequency(freq);
+          //sqr.setFrequency(freq);
           Serial.print("Frecuencia cambiada a: ");
           Serial.println(freq);
         }
         int pw = input.toInt();
-        if (pw >= 0 && pw <= 8) {
-          sqr.setPulseWidth(pw);
-          Serial.print("pw cambiada a: ");
+        if (pw >= 0 && pw <= 45) {
+          sawtooth.setAmount(pw);
+          //sqr.setPulseWidth(pw);
+          Serial.print("amount cambiada a: ");
           Serial.println(pw);         
         }
     }
