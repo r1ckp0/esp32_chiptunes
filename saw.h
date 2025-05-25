@@ -7,9 +7,9 @@ class Saw {
 public:
     Saw(float sampleRate);
     void initSaw();
-    float process();
+    uint8_t process();
     void setFrequency(float newFrequency);
-    void setAmount(float newAmount);
+    void setAmount(int newAmount);
 
 
 private:

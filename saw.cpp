@@ -8,25 +8,27 @@ Saw::Saw(float sampleRate) :
 void Saw::initSaw() {
     phase = 0.0f;
     amount = 42;
+    counter = 0;
 }
 
-float Saw::process() {
-    phase+=1;
+uint8_t Saw::process() {
+    phase+=phaseIncrement;
 
-    if (phase >= phaseIncrement) {
+    if (phase >= 1.0) {
+        phase-=1.0;
         counter+=1;
-        phase = 0;
-    }
-
-    if (counter >= 14) {
+        if (counter >= 14) {
         counter = 0;
+        }
     }
 
-    return transform();
+    float value = transform();
+
+    return (uint8_t)(value * 255.0f);
 }
 
 void Saw::setAmount(int newAmount) {
-    if (newAmount > 0) {
+    if (newAmount >= 0) {
         amount = newAmount;
     }
 }
@@ -51,10 +53,11 @@ float Saw::transform() {
             + (((value >> 6) & 1) << 3)
             + (((value >> 7) & 1) << 4);
 
-    // Normalizar a [-1.0, 1.0]
-    return ((float)out / 31.0f) * 2.0f - 1.0f;
+
+    return ((float)out / 31.0f);
+
 }
 
 void Saw::updatePhaseIncrement() {
-    phaseIncrement = sampleRate / frequency;
+    phaseIncrement = (frequency * 14) / sampleRate;
 }
