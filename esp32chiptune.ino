@@ -9,6 +9,7 @@
 #define SQR_OUT 5
 
 const float SAMPLE_RATE = 44100.0;
+const uint32_t TIMER_INTERVAL = 2000000UL / (uint32_t)SAMPLE_RATE;
 //Tri triangle(SAMPLE_RATE);
 //Lfsr noise(SAMPLE_RATE);
 Square sqr(SAMPLE_RATE);
@@ -42,11 +43,12 @@ void setup() {
   //triangle.setAmplitude(1.0);
 
   //noise.setFrequency(440.0);
+
   sqr.setFrequency(440.0);
 
-  timer = timerBegin(0, 80, true);
+  timer = timerBegin(0, 40, true);
   timerAttachInterrupt(timer, &onTimer, true);
-  timerAlarmWrite(timer, 1000000 / SAMPLE_RATE, true);
+  timerAlarmWrite(timer, TIMER_INTERVAL, true);
 
   timerAlarmEnable(timer);
 
@@ -59,17 +61,16 @@ void loop() {
         String input = Serial.readStringUntil('\n');
         float freq = input.toFloat();
         if (freq > 20.0 && freq < 5000.0) {
-            //triangle.setFrequency(freq);
-            sqr.setFrequency(freq);
-            Serial.print("Frecuencia cambiada a: ");
-            Serial.println(freq);
+          //triangle.setFrequency(freq);
+          sqr.setFrequency(freq);
+          Serial.print("Frecuencia cambiada a: ");
+          Serial.println(freq);
         }
-        int duty = input.toInt();
-        if (duty < 8 && duty >= 0) {
-            
-            sqr.setDutyCycle(duty);
-            Serial.print("value: ");
-            Serial.println(duty);            
+        int pw = input.toInt();
+        if (pw >= 0 && pw <= 8) {
+          sqr.setPulseWidth(pw);
+          Serial.print("pw cambiada a: ");
+          Serial.println(pw);         
         }
     }
     

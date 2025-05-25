@@ -1,29 +1,27 @@
 #include "square.h"
 
 Square::Square(float sampleRate) :
-    sampleRate(sampleRate), dutyCyle(1), phaseIncrement(0.0f), phase(0),
-    frequency(440.0f), current(0) {
+    sampleRate(sampleRate), pulseWidth(1), phaseIncrement(0.0f), phase(0),
+    frequency(440.0f) {
     initSquare();
 }
 
 void Square::initSquare() {
-    Square = 1;
-    feedback = 7;
-    phase = 0;
-    
-    for (i = 0, i < 8, i++) {
-        duties[i] = pow(2, i) - 1;
-    }
+    phase = 0.5f;
+    pulseWidth = 1;
 }
-
 
 uint8_t Square::process() {
 
-    phase += 1;
-    if (phase >= phaseIncrement) {
-        current = (current + 1) % 16
+    phase+=phaseIncrement;
+    if (phase >= 1.0f) {
+        phase -=  1.0f;
     }
-    return ((Square >> current) & 1) ? HIGH : LOW;
+    if (phase<= (pulseWidth/16.0f)) {
+        return HIGH;
+    } else {
+        return LOW;
+    }
 }
 
 void Square::setFrequency(float newFrequency) {
@@ -31,14 +29,10 @@ void Square::setFrequency(float newFrequency) {
     updatePhaseIncrement();
 }
 
-void Square::setDutyCycle(int newDutyCycle) {
-    if (newDutyCycle >= 0 && newDutyCycle < 8) {
-        dutyCyle = newDutyCycle;
-    }
+void Square::setPulseWidth(float newPulseWidth) {
+    pulseWidth = newPulseWidth;
 }
 
 void Square::updatePhaseIncrement() {
-    phaseIncrement = sampleRate / frequency / 16;
+    phaseIncrement = frequency / sampleRate;
 }
-
-

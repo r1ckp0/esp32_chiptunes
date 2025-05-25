@@ -15,7 +15,7 @@ public:
 private:
 
     int lfsr;
-    int phase;
+    float phase;
     int feedback;
     float phaseIncrement;
     float sampleRate;

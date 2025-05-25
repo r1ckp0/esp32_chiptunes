@@ -9,15 +9,15 @@ public:
     void initSquare();
     uint8_t process();
     void setFrequency(float newFrequency);
+    void setPulseWidth(float newPulseWidth);
 
 
 private:
-    int value
-    int phase;
+    float phase;
     float phaseIncrement;
     float sampleRate;
     float frequency;
-    uint16_t dutyCycle;
+    int pulseWidth;
 
 
     void updatePhaseIncrement();
