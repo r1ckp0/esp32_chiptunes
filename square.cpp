@@ -18,9 +18,9 @@ uint8_t Square::process() {
         phase -=  1.0f;
     }
     if (phase<= (pulseWidth/16.0f)) {
-        return HIGH;
+        return 255 ;
     } else {
-        return LOW;
+        return 0;
     }
 }
 

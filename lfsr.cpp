@@ -21,7 +21,7 @@ uint8_t Lfsr::process() {
         lfsr = (lfsr >> 1) | (bit << feedback);
         phase = 0;
     }
-    return (lfsr & 1) ? HIGH : LOW;
+    return (lfsr & 1) * 255;
 }
 
 void Lfsr::setFrequency(float newFrequency) {
