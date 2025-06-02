@@ -20,6 +20,7 @@ private:
     float phaseIncrement;
     float sampleRate;
     float frequency;
+    float amplitude;
 
 
     void updatePhaseIncrement();

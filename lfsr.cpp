@@ -1,7 +1,7 @@
 #include "lfsr.h"
 
 Lfsr::Lfsr(float sampleRate) :
-    sampleRate(sampleRate), lfsr(1), phaseIncrement(0.0f), phase(0),
+    sampleRate(sampleRate), lfsr(1), phaseIncrement(0.0f), phase(0), amplitude(1.0f),
     frequency(440.0f), feedback(7) {
     initLfsr();
 }
@@ -21,7 +21,7 @@ uint8_t Lfsr::process() {
         lfsr = (lfsr >> 1) | (bit << feedback);
         phase = 0;
     }
-    return (lfsr & 1) * 255;
+    return (uint8_t)((lfsr & 1) * amplitude * 255.0f);
 }
 
 void Lfsr::setFrequency(float newFrequency) {

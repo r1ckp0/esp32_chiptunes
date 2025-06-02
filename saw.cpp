@@ -1,7 +1,7 @@
 #include "saw.h"
 
 Saw::Saw(float sampleRate) : 
-    sampleRate(sampleRate), frequency(440.0f), amount(42), phase(0.0f), phaseIncrement(0.0f), counter(0) { 
+    sampleRate(sampleRate), frequency(440.0f), amount(42), phase(0.0f), phaseIncrement(0.0f), counter(0), amplitude(1.0f) { 
     initSaw();
 }
 
@@ -24,7 +24,7 @@ uint8_t Saw::process() {
 
     float value = transform();
 
-    return (uint8_t)(value * 255.0f);
+    return (uint8_t)(value * 255.0f * amplitude);
 }
 
 void Saw::setAmount(int newAmount) {

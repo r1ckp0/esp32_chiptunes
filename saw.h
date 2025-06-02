@@ -19,6 +19,7 @@ private:
     float frequency;
     float phaseIncrement;
     int counter;
+    float amplitude;
 
     float transform();
     void updatePhaseIncrement();
